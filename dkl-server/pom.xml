@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>dkl-cloud</artifactId>
+        <groupId>com.dklcloud</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>dkl-server</artifactId>
+    <packaging>pom</packaging>
+    <name>dkl-server</name>
+    <description>dkl-server服务提供模块</description>
+    <modules>
+        <module>dkl-server-system</module>
+        <module>dkl-server-test</module>
+    </modules>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>com.dklcloud</groupId>
+            <artifactId>dkl-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+</project>
