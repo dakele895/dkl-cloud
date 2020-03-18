@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
  * @description:
  */
 @Repository
-public class SysUserDaoImpl extends BaseDaoImpl<SysUser> implements SysUserDao {
+public class SysUserDaoImpl extends BaseDaoImpl<SysUserMapper,SysUser> implements SysUserDao {
 
 	@Autowired
 	private SysUserMapper sysUserMapper;

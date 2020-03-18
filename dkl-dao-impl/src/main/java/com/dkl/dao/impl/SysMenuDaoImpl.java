@@ -14,7 +14,7 @@ import java.util.List;
  * @description:
  */
 @Repository
-public class SysMenuDaoImpl extends BaseDaoImpl<SysMenu> implements SysMenuDao {
+public class SysMenuDaoImpl extends BaseDaoImpl<SysMenuMapper,SysMenu> implements SysMenuDao {
 
 	@Autowired
 	private SysMenuMapper sysMenuMapper;

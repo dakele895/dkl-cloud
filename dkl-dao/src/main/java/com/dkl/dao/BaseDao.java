@@ -1,14 +1,24 @@
 package com.dkl.dao;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.additional.query.ChainQuery;
+import com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper;
+import com.baomidou.mybatisplus.extension.service.additional.update.ChainUpdate;
+import com.baomidou.mybatisplus.extension.service.additional.update.impl.LambdaUpdateChainWrapper;
+import com.baomidou.mybatisplus.extension.service.additional.update.impl.UpdateChainWrapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author: dalele
@@ -18,125 +28,355 @@ import java.util.Map;
 public interface BaseDao<T> {
 
 	/**
-	 * 插入一条记录
+	 * 插入一条记录（选择字段，策略插入）
 	 *
 	 * @param entity 实体对象
 	 */
-	int insert(T entity);
+	boolean save(T entity);
+
+	/**
+	 * 插入（批量）
+	 *
+	 * @param entityList 实体对象集合
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	default boolean saveBatch(Collection<T> entityList) {
+		return saveBatch(entityList, 1000);
+	}
+
+	/**
+	 * 插入（批量）
+	 *
+	 * @param entityList 实体对象集合
+	 * @param batchSize  插入批次数量
+	 */
+	boolean saveBatch(Collection<T> entityList, int batchSize);
+
+	/**
+	 * 批量修改插入
+	 *
+	 * @param entityList 实体对象集合
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	default boolean saveOrUpdateBatch(Collection<T> entityList) {
+		return saveOrUpdateBatch(entityList, 1000);
+	}
+
+	/**
+	 * 批量修改插入
+	 *
+	 * @param entityList 实体对象集合
+	 * @param batchSize  每次的数量
+	 */
+	boolean saveOrUpdateBatch(Collection<T> entityList, int batchSize);
 
 	/**
 	 * 根据 ID 删除
 	 *
 	 * @param id 主键ID
 	 */
-	int deleteById(Serializable id);
+	boolean removeById(Serializable id);
 
 	/**
 	 * 根据 columnMap 条件，删除记录
 	 *
 	 * @param columnMap 表字段 map 对象
 	 */
-	int deleteByMap(@Param(Constants.COLUMN_MAP) Map<String, Object> columnMap);
+	boolean removeByMap(Map<String, Object> columnMap);
 
 	/**
 	 * 根据 entity 条件，删除记录
 	 *
-	 * @param wrapper 实体对象封装操作类（可以为 null）
+	 * @param queryWrapper 实体包装类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
 	 */
-	int delete(@Param(Constants.WRAPPER) Wrapper<T> wrapper);
+	boolean remove(Wrapper<T> queryWrapper);
 
 	/**
 	 * 删除（根据ID 批量删除）
 	 *
-	 * @param idList 主键ID列表(不能为 null 以及 empty)
+	 * @param idList 主键ID列表
 	 */
-	int deleteBatchIds(@Param(Constants.COLLECTION) Collection<? extends Serializable> idList);
+	boolean removeByIds(Collection<? extends Serializable> idList);
 
 	/**
-	 * 根据 ID 修改
+	 * 根据 ID 选择修改
 	 *
 	 * @param entity 实体对象
 	 */
-	int updateById(@Param(Constants.ENTITY) T entity);
+	boolean updateById(T entity);
 
 	/**
 	 * 根据 whereEntity 条件，更新记录
 	 *
-	 * @param entity        实体对象 (set 条件值,可以为 null)
-	 * @param updateWrapper 实体对象封装操作类（可以为 null,里面的 entity 用于生成 where 语句）
+	 * @param entity        实体对象
+	 * @param updateWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper}
 	 */
-	int update(@Param(Constants.ENTITY) T entity, @Param(Constants.WRAPPER) Wrapper<T> updateWrapper);
+	boolean update(T entity, Wrapper<T> updateWrapper);
+
+	/**
+	 * 根据 UpdateWrapper 条件，更新记录 需要设置sqlset
+	 *
+	 * @param updateWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper}
+	 */
+	default boolean update(Wrapper<T> updateWrapper) {
+		return update(null, updateWrapper);
+	}
+
+	/**
+	 * 根据ID 批量更新
+	 *
+	 * @param entityList 实体对象集合
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	default boolean updateBatchById(Collection<T> entityList) {
+		return updateBatchById(entityList, 1000);
+	}
+
+	/**
+	 * 根据ID 批量更新
+	 *
+	 * @param entityList 实体对象集合
+	 * @param batchSize  更新批次数量
+	 */
+	boolean updateBatchById(Collection<T> entityList, int batchSize);
+
+	/**
+	 * TableId 注解存在更新记录，否插入一条记录
+	 *
+	 * @param entity 实体对象
+	 */
+	boolean saveOrUpdate(T entity);
 
 	/**
 	 * 根据 ID 查询
 	 *
 	 * @param id 主键ID
 	 */
-	T selectById(Serializable id);
+	T getById(Serializable id);
 
 	/**
 	 * 查询（根据ID 批量查询）
 	 *
-	 * @param idList 主键ID列表(不能为 null 以及 empty)
+	 * @param idList 主键ID列表
 	 */
-	List<T> selectBatchIds(@Param(Constants.COLLECTION) Collection<? extends Serializable> idList);
+	Collection<T> listByIds(Collection<? extends Serializable> idList);
 
 	/**
 	 * 查询（根据 columnMap 条件）
 	 *
 	 * @param columnMap 表字段 map 对象
 	 */
-	List<T> selectByMap(@Param(Constants.COLUMN_MAP) Map<String, Object> columnMap);
+	Collection<T> listByMap(Map<String, Object> columnMap);
 
 	/**
-	 * 根据 entity 条件，查询一条记录
+	 * 根据 Wrapper，查询一条记录 <br/>
+	 * <p>结果集，如果是多个会抛出异常，随机取一条加上限制条件 wrapper.last("LIMIT 1")</p>
 	 *
-	 * @param queryWrapper 实体对象封装操作类（可以为 null）
+	 * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
 	 */
-	T selectOne(@Param(Constants.WRAPPER) Wrapper<T> queryWrapper);
+	default T getOne(Wrapper<T> queryWrapper) {
+		return getOne(queryWrapper, true);
+	}
+
+	/**
+	 * 根据 Wrapper，查询一条记录
+	 *
+	 * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
+	 * @param throwEx      有多个 result 是否抛出异常
+	 */
+	T getOne(Wrapper<T> queryWrapper, boolean throwEx);
+
+	/**
+	 * 根据 Wrapper，查询一条记录
+	 *
+	 * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
+	 */
+	Map<String, Object> getMap(Wrapper<T> queryWrapper);
+
+	/**
+	 * 根据 Wrapper，查询一条记录
+	 *
+	 * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
+	 * @param mapper       转换函数
+	 */
+	<V> V getObj(Wrapper<T> queryWrapper, Function<? super Object, V> mapper);
 
 	/**
 	 * 根据 Wrapper 条件，查询总记录数
 	 *
-	 * @param queryWrapper 实体对象封装操作类（可以为 null）
+	 * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
 	 */
-	Integer selectCount(@Param(Constants.WRAPPER) Wrapper<T> queryWrapper);
+	int count(Wrapper<T> queryWrapper);
 
 	/**
-	 * 根据 entity 条件，查询全部记录
+	 * 查询总记录数
 	 *
-	 * @param queryWrapper 实体对象封装操作类（可以为 null）
+	 * @see Wrappers#emptyWrapper()
 	 */
-	List<T> selectList(@Param(Constants.WRAPPER) Wrapper<T> queryWrapper);
+	default int count() {
+		return count(Wrappers.emptyWrapper());
+	}
+
+	/**
+	 * 查询列表
+	 *
+	 * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
+	 */
+	List<T> list(Wrapper<T> queryWrapper);
+
+	/**
+	 * 查询所有
+	 *
+	 * @see Wrappers#emptyWrapper()
+	 */
+	default List<T> list() {
+		return list(Wrappers.emptyWrapper());
+	}
+
+	/**
+	 * 翻页查询
+	 *
+	 * @param page         翻页对象
+	 * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
+	 */
+	IPage<T> page(IPage<T> page, Wrapper<T> queryWrapper);
+
+	/**
+	 * 无条件翻页查询
+	 *
+	 * @param page 翻页对象
+	 * @see Wrappers#emptyWrapper()
+	 */
+	default IPage<T> page(IPage<T> page) {
+		return page(page, Wrappers.emptyWrapper());
+	}
+
+	/**
+	 * 查询列表
+	 *
+	 * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
+	 */
+	List<Map<String, Object>> listMaps(Wrapper<T> queryWrapper);
+
+	/**
+	 * 查询所有列表
+	 *
+	 * @see Wrappers#emptyWrapper()
+	 */
+	default List<Map<String, Object>> listMaps() {
+		return listMaps(Wrappers.emptyWrapper());
+	}
+
+	/**
+	 * 查询全部记录
+	 */
+	default List<Object> listObjs() {
+		return listObjs(Function.identity());
+	}
+
+	/**
+	 * 查询全部记录
+	 *
+	 * @param mapper 转换函数
+	 */
+	default <V> List<V> listObjs(Function<? super Object, V> mapper) {
+		return listObjs(Wrappers.emptyWrapper(), mapper);
+	}
 
 	/**
 	 * 根据 Wrapper 条件，查询全部记录
 	 *
-	 * @param queryWrapper 实体对象封装操作类（可以为 null）
+	 * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
 	 */
-	List<Map<String, Object>> selectMaps(@Param(Constants.WRAPPER) Wrapper<T> queryWrapper);
+	default List<Object> listObjs(Wrapper<T> queryWrapper) {
+		return listObjs(queryWrapper, Function.identity());
+	}
 
 	/**
 	 * 根据 Wrapper 条件，查询全部记录
-	 * <p>注意： 只返回第一个字段的值</p>
 	 *
-	 * @param queryWrapper 实体对象封装操作类（可以为 null）
+	 * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
+	 * @param mapper       转换函数
 	 */
-	List<Object> selectObjs(@Param(Constants.WRAPPER) Wrapper<T> queryWrapper);
+	<V> List<V> listObjs(Wrapper<T> queryWrapper, Function<? super Object, V> mapper);
 
 	/**
-	 * 根据 entity 条件，查询全部记录（并翻页）
+	 * 翻页查询
 	 *
-	 * @param page         分页查询条件（可以为 RowBounds.DEFAULT）
-	 * @param queryWrapper 实体对象封装操作类（可以为 null）
+	 * @param page         翻页对象
+	 * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
 	 */
-	IPage<T> selectPage(IPage<T> page, @Param(Constants.WRAPPER) Wrapper<T> queryWrapper);
+	IPage<Map<String, Object>> pageMaps(IPage<T> page, Wrapper<T> queryWrapper);
 
 	/**
-	 * 根据 Wrapper 条件，查询全部记录（并翻页）
+	 * 无条件翻页查询
 	 *
-	 * @param page         分页查询条件
-	 * @param queryWrapper 实体对象封装操作类
+	 * @param page 翻页对象
+	 * @see Wrappers#emptyWrapper()
 	 */
-	IPage<Map<String, Object>> selectMapsPage(IPage<T> page, @Param(Constants.WRAPPER) Wrapper<T> queryWrapper);
+	default IPage<Map<String, Object>> pageMaps(IPage<T> page) {
+		return pageMaps(page, Wrappers.emptyWrapper());
+	}
+
+	/**
+	 * 获取对应 entity 的 BaseMapper
+	 *
+	 * @return BaseMapper
+	 */
+	BaseMapper<T> getBaseMapper();
+
+	/**
+	 * 以下的方法使用介绍:
+	 *
+	 * 一. 名称介绍
+	 * 1. 方法名带有 query 的为对数据的查询操作, 方法名带有 update 的为对数据的修改操作
+	 * 2. 方法名带有 lambda 的为内部方法入参 column 支持函数式的
+	 *
+	 * 二. 支持介绍
+	 * 1. 方法名带有 query 的支持以 {@link ChainQuery} 内部的方法名结尾进行数据查询操作
+	 * 2. 方法名带有 update 的支持以 {@link ChainUpdate} 内部的方法名为结尾进行数据修改操作
+	 *
+	 * 三. 使用示例,只用不带 lambda 的方法各展示一个例子,其他类推
+	 * 1. 根据条件获取一条数据: `query().eq("column", value).one()`
+	 * 2. 根据条件删除一条数据: `update().eq("column", value).remove()`
+	 *
+	 */
+
+	/**
+	 * 链式查询 普通
+	 *
+	 * @return QueryWrapper 的包装类
+	 */
+	default QueryChainWrapper<T> query() {
+		return new QueryChainWrapper<>(getBaseMapper());
+	}
+
+	/**
+	 * 链式查询 lambda 式
+	 * <p>注意：不支持 Kotlin </p>
+	 *
+	 * @return LambdaQueryWrapper 的包装类
+	 */
+	default LambdaQueryChainWrapper<T> lambdaQuery() {
+		return new LambdaQueryChainWrapper<>(getBaseMapper());
+	}
+
+	/**
+	 * 链式更改 普通
+	 *
+	 * @return UpdateWrapper 的包装类
+	 */
+	default UpdateChainWrapper<T> update() {
+		return new UpdateChainWrapper<>(getBaseMapper());
+	}
+
+	/**
+	 * 链式更改 lambda 式
+	 * <p>注意：不支持 Kotlin </p>
+	 *
+	 * @return LambdaUpdateWrapper 的包装类
+	 */
+	default LambdaUpdateChainWrapper<T> lambdaUpdate() {
+		return new LambdaUpdateChainWrapper<>(getBaseMapper());
+	}
 }
