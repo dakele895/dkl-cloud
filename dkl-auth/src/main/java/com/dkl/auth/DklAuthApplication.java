@@ -1,11 +1,11 @@
 package com.dkl.auth;
 
 import com.dkl.annotation.DklCloudApplication;
+import com.dkl.annotation.EnableDklLettuceRedis;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.context.annotation.ComponentScan;
 
 /**
  * @author : dalele
@@ -15,6 +15,7 @@ import org.springframework.context.annotation.ComponentScan;
 @DklCloudApplication
 @EnableDiscoveryClient
 @SpringBootApplication
+@EnableDklLettuceRedis
 @MapperScan("com.dkl.mapper")
 public class DklAuthApplication {
     public static void main(String[] args) {

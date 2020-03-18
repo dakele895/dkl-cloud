@@ -1,7 +1,9 @@
 package com.dkl.auth.config;
 
+import com.dkl.auth.properties.DklAuthProperties;
 import com.dkl.handler.DklAccessDeniedHandler;
 import com.dkl.handler.DklAuthExceptionEntryPoint;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,15 +25,20 @@ public class DklResourceServerConfigure extends ResourceServerConfigurerAdapter 
     private DklAccessDeniedHandler     accessDeniedHandler;
     @Autowired
     private DklAuthExceptionEntryPoint exceptionEntryPoint;
+	@Autowired
+	private DklAuthProperties properties;
 
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .requestMatchers().antMatchers("/**")
-                .and()
-                .authorizeRequests()
-                .antMatchers("/**").authenticated();
+		String[] anonUrls = StringUtils.splitByWholeSeparatorPreserveAllTokens(properties.getAnonUrl(), ",");
+		http.csrf().disable()
+				.requestMatchers().antMatchers("/**")
+				.and()
+				.authorizeRequests()
+				.antMatchers(anonUrls).permitAll()
+				.antMatchers("/**").authenticated()
+				.and().httpBasic();
     }
 
 

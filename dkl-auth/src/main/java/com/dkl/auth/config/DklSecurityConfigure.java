@@ -1,5 +1,6 @@
 package com.dkl.auth.config;
 
+import com.dkl.auth.filter.ValidateCodeFilter;
 import com.dkl.auth.service.DklUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * @Auther: dalele
@@ -24,7 +26,12 @@ public class DklSecurityConfigure extends WebSecurityConfigurerAdapter {
     @Autowired
     private DklUserDetailService userDetailService;
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private PasswordEncoder      passwordEncoder;
+	/**
+	 * 验证码过滤
+	 */
+	@Autowired
+	private ValidateCodeFilter   validateCodeFilter;
 
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -33,13 +40,14 @@ public class DklSecurityConfigure extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.requestMatchers()
-                .antMatchers("/oauth/**")
-                .and()
-                .authorizeRequests()
-                .antMatchers("/oauth/**").authenticated()
-                .and()
-                .csrf().disable();
+		http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+				.requestMatchers()
+				.antMatchers("/oauth/**")
+				.and()
+				.authorizeRequests()
+				.antMatchers("/oauth/**").authenticated()
+				.and()
+				.csrf().disable();
     }
 
     @Override

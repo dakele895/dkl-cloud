@@ -1,11 +1,16 @@
 package com.dkl.dao.impl;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dkl.dao.SysUserDao;
+import com.dkl.entity.QueryRequest;
 import com.dkl.entity.system.SysUser;
 import com.dkl.mapper.SysUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author: dalele
@@ -22,4 +27,11 @@ public class SysUserDaoImpl extends BaseDaoImpl<SysUserMapper,SysUser> implement
 	public SysUser findByName(String username) {
 		return sysUserMapper.findByName(username);
 	}
+
+	@Override
+	public IPage<SysUser> findUserDetailPage(Page page, SysUser user) {
+		return sysUserMapper.findUserDetailPage(page,user);
+	}
+
+
 }

@@ -1,5 +1,7 @@
 package com.dkl.server.system.controller;
 
+import com.dkl.service.SysUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,6 +15,9 @@ import java.security.Principal;
 @RestController
 public class TestController {
 
+	@Autowired
+	private SysUserService sysUserService;
+
     @GetMapping("info")
     public String test(){
         return "febs-server-system";
@@ -20,6 +25,7 @@ public class TestController {
 
     @GetMapping("hello")
     public String hello(String name) {
+    	sysUserService.getUser(1L);
         return "hello" + name;
     }
 
