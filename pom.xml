@@ -19,7 +19,13 @@
         <module>dkl-common</module>
         <module>dkl-gateway</module>
         <module>dkl-server</module>
-    </modules>
+		<module>dkl-entity</module>
+		<module>dkl-dao</module>
+		<module>dkl-dao-impl</module>
+		<module>dkl-service</module>
+		<module>dkl-service-impl</module>
+		<module>dkl-mapper</module>
+	</modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -31,6 +37,19 @@
     <properties>
         <spring-cloud.version>Greenwich.SR1</spring-cloud.version>
     </properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-boot-starter</artifactId>
+			<version>3.1.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+	</dependencies>
 
 
     <dependencyManagement>
