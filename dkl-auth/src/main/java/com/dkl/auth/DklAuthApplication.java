@@ -16,7 +16,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @EnableDiscoveryClient
 @SpringBootApplication
 @EnableDklLettuceRedis
-@MapperScan("com.dkl.mapper")
+@MapperScan("com.dkl.auth.mapper")
 public class DklAuthApplication {
     public static void main(String[] args) {
         SpringApplication.run(DklAuthApplication.class, args);

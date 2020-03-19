@@ -22,8 +22,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableDiscoveryClient
 @SpringBootApplication
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@MapperScan("com.dkl.mapper")
-//@ComponentScan(basePackages = {"com.dkl.dao","com.dkl.service"})
+@MapperScan("com.dkl.server.system")
 public class DklServerSystemApplication {
 
     public static void main(String[] args) {

@@ -1,12 +1,10 @@
 package com.dkl.auth.manager;
 
-import com.dkl.dao.SysMenuDao;
-import com.dkl.dao.SysUserDao;
+
+import com.dkl.auth.mapper.SysMenuMapper;
+import com.dkl.auth.mapper.SysUserMapper;
 import com.dkl.entity.system.SysMenu;
 import com.dkl.entity.system.SysUser;
-import com.dkl.mapper.SysMenuMapper;
-import com.dkl.mapper.SysUserMapper;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

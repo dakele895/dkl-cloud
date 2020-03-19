@@ -20,12 +20,6 @@
         <module>dkl-gateway</module>
         <module>dkl-server</module>
 		<module>dkl-entity</module>
-		<module>dkl-dao</module>
-		<module>dkl-dao-impl</module>
-		<module>dkl-service</module>
-		<module>dkl-service-impl</module>
-		<module>dkl-mapper</module>
-		<module>dkl-vo</module>
 	</modules>
 
     <parent>
@@ -51,10 +45,6 @@
 			<artifactId>lombok</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-security</artifactId>
-		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
