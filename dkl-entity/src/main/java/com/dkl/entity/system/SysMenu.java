@@ -1,5 +1,8 @@
 package com.dkl.entity.system;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -18,6 +21,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
+@TableName("sys_menu")
 public class SysMenu implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -25,6 +29,7 @@ public class SysMenu implements Serializable {
     /**
      * 菜单/按钮id
      */
+	@TableId(value = "menu_id", type = IdType.AUTO)
     private Long menuId;
 
     /**
