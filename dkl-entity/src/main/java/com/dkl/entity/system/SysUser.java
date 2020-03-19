@@ -5,8 +5,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * <p>
@@ -31,6 +35,7 @@ public class SysUser implements Serializable {
     /**
      * 用户名
      */
+	@Size(min = 4, max = 10, message = "{range}")
     private String username;
 
     /**
@@ -46,6 +51,8 @@ public class SysUser implements Serializable {
     /**
      * 邮箱
      */
+	@Size(max = 50, message = "{noMoreThan}")
+	@Email(message = "{email}")
     private String email;
 
     /**
@@ -56,6 +63,7 @@ public class SysUser implements Serializable {
     /**
      * 状态 0锁定1有效
      */
+	@NotBlank(message = "{required}")
     private String status;
 
     /**
@@ -66,6 +74,7 @@ public class SysUser implements Serializable {
     /**
      * 性别 0男1女2保密
      */
+	@NotBlank(message = "{required}")
     private String ssex;
 
     /**
@@ -81,7 +90,7 @@ public class SysUser implements Serializable {
     /**
      * 创建时间
      */
-    private LocalDateTime createdTime;
+    private Date createdTime;
 
     /**
      * 更新人
@@ -91,7 +100,7 @@ public class SysUser implements Serializable {
     /**
      * 更新时间
      */
-    private LocalDateTime updatedTime;
+    private Date updatedTime;
 
 	/**
 	 * 角色 ID

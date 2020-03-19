@@ -40,7 +40,7 @@ security:
 
 mybatis-plus:
   type-aliases-package: com.dkl.entity.system
-  mapper-locations: classpath:mapper/*/*.xml
+  mapper-locations: classpath:mapper/*.xml
   configuration:
     jdbc-type-for-null: null
   global-config:

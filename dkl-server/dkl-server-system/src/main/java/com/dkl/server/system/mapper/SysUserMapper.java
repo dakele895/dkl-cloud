@@ -17,12 +17,7 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
-	/**
-	 * 通过用户名获取当前用户
-	 * @param username
-	 * @return SysUser
-	 */
-	SysUser findByName(String username);
+
 
 	/**
 	 * 查找用户详细信息

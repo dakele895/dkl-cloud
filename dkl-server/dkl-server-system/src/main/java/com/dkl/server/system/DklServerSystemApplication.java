@@ -13,7 +13,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
- * @Auther: dalele
+ * @author : dalele
  * @Date: 2020/3/17 15:57
  * @Description:
  */
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableDiscoveryClient
 @SpringBootApplication
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@MapperScan("com.dkl.server.system")
+@MapperScan("com.dkl.server.system.mapper")
 public class DklServerSystemApplication {
 
     public static void main(String[] args) {
