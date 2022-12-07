@@ -17,7 +17,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
  */
 @DklCloudApplication
 @EnableFeignClients
-@EnableDiscoveryClient
 @SpringBootApplication
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class DklServerTestApplication {

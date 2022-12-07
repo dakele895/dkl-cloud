@@ -13,7 +13,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @Description:
  */
 @DklCloudApplication
-@EnableDiscoveryClient
 @SpringBootApplication
 @EnableDklLettuceRedis
 @MapperScan("com.dkl.auth.mapper")

@@ -12,7 +12,6 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
  * @Description: 服务网关
  */
 @EnableZuulProxy
-@EnableDiscoveryClient
 @SpringBootApplication
 public class DklGatewayApplication {
     public static void main(String[] args) {

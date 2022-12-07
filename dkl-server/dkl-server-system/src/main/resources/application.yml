@@ -18,19 +18,16 @@ spring:
       datasource:
         base:
           username: root
-          password: kang
+          password: abc123!@#A
           driver-class-name: com.mysql.cj.jdbc.Driver
           url: jdbc:mysql://localhost:3306/dkl-cloud?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
 
-eureka:
-  instance:
-    lease-renewal-interval-in-seconds: 20
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    instance-info-replication-interval-seconds: 30
-    serviceUrl:
-      defaultZone: http://dkl:123456@localhost:8001/register/eureka/
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${nacos.url}:8848
+
 
 security:
   oauth2:
