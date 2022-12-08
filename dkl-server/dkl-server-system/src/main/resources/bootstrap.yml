@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: dkl-server-system
+  cloud:
+    nacos:
+      config:
+        server-addr: ${nacos.url}:8848
+        group: DEFAULT_GROUP
+        prefix: dkl-server-system
+        file-extension: yaml
+      discovery:
+        server-addr: ${nacos.url}:8848
